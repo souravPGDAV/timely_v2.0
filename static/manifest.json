@@ -1,0 +1,33 @@
+{
+
+	"name":"TIMELY",
+	"short_name":"Timely",
+	"start_url":"home.html",
+	"display":"standalone",
+	"background_color":"#FFFFFF",
+	"theme_color":"#1266F1",
+	"orientation":"portrait-primary",
+	"id":"/static/home.html",
+	"apple-touch-icon":"/static/logo_144_sq.png",
+	"icons":[{
+		    "src": "/static/logo_144_sq.png",
+		    "sizes": "144x144",
+		    "type": "image/png",
+		    "purpose": "any"
+		},
+		{
+		    "src": "/static/logo_144_sq.png",
+		    "sizes": "144x144",
+		    "type": "image/png",
+		    "purpose": "maskable"
+		},
+		{
+		    "src": "/static/logo_512.png",
+		    "sizes": "512X512",
+		    "type": "image/png",
+		    "purpose": "any"
+		}
+	]
+	
+}
+

@@ -1,0 +1,293 @@
+	<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>PROGRESS REPORT - {{data['user']['month_year']}}</title>
+</head>
+<body><style type="text/css">
+		@page{
+			@top-left{
+				background: #1266F1;
+				content: counter(page);
+				height: 1cm;
+				text-align: center;
+				width: 1cm;
+				color: #FBFBFB;
+			}
+			@top-center{
+				background: #1266F1;
+				content: '';
+				display: block;
+				height: 0.05cm;
+				opacity: .5;
+				color: #FBFBFB;
+				/*text-align: center;*/
+				width: 100%;
+			}
+			@top-right{
+				content: string(heading);
+				font-size: 9pt;
+				height: 1cm;
+				vertical-align: middle;
+				width: 100%;
+
+			}
+		}
+		.user_details{
+			align-content: right;
+		}
+		@page :first{
+			background-size: cover;
+			margin: 0;
+		}
+		@page chapter{
+			background: #1266F1;
+			margin: 0;
+			@top-left{content: none}
+			@top-center{content: none}
+			@top-right{content: none}
+		}
+		html{
+			color: #393939;
+			font-size: 11pt;
+			font-family: "Noto sans", sans-serif;
+			font-weight: 300;
+			line-height: 1.5;
+
+		}
+		h1{
+			color: #1266F1;
+			font-size: 38pt;
+			margin: 5cm 2cm 0 2cm;
+			page: no-chapter;
+			width: 100%;
+		}
+		h2,h3,h4{
+			color: black;
+			font-weight: 400;
+		}
+		h2.main_heading{
+			text-align: center;
+		}
+		h2{
+			break-before: always;
+			font-size: 28pt;
+			string-set:  heading content();
+
+		}
+		h3{
+			font-weight: 300;
+			font-size: 15pt;
+		}
+		h4{
+			font-size: 13pt;
+		}
+		p{
+			color: #FBFBFB;
+		}
+
+		#cover{
+			align-content: space-between;
+			display: flex;
+			flex-wrap: wrap;
+			height: 297mm;
+		}
+		#cover footer{
+			background:  #1266F1;
+			flex: 1 50%;
+			margin: 0 -2cm;
+			padding: 1cm 0;
+
+
+		}
+		
+		#contents{
+			break-after: left;
+		}
+		#contents h2{
+			font-size: 20pt;
+			font-weight: 400;
+			margin-bottom: 3cm;
+
+		}
+		#contents h3{
+			font-weight: 500;
+			margin: 3em 0 1em;
+		}
+		#contents h3: :before{
+			background: #82b965;
+			content: '';
+			display: block;
+			height: .08cm;
+			margin-bottom: .25cm;
+			width: 2cm;
+
+		}
+		table{
+			border: 1pt solid #1266F1;
+			border-collapse: collapse;
+		}
+		 tr{
+			border: 1pt solid #1266F1;
+		}
+		#contents ul{
+			list-style: none;	
+			padding-left: 0;
+		}
+		#contents ul li{
+			border-top: .25pt solid #clclcl;
+			margin: .25cm 0;
+			padding-top: .25cm;
+		}
+		#contents ul li::before{
+			color: #82b965;
+			content: '';
+			font-size: 40pt;
+			line-height: 16pt;
+			vertical-align: bottom;
+		}
+		#contents ul li a{
+			color: inherit;
+			text-decoration-line: inherit;
+		}
+		p.ending{
+			text-align: center;
+			color: #000000;
+
+			
+		}
+		p.contact{
+			text-align: center;
+			margin: .25cm 0;
+			color: #1266F1;
+		}
+		div.user_details{
+			border-bottom: .25pt solid #1266F1;
+		}
+		/*.footer{
+			background:  #82b965;
+			flex: 1 50%;
+			margin: 0 -2cm;
+			padding: 1cm 0;
+			padding-left: 3cm;
+			padding-bottom: 2cm;
+			font-size: 14px;
+			height: 10px;
+			text-align: center;
+		}
+*/
+	</style>
+
+		<div id="cover">
+			<h1>{{data['user']['fname']}}'s Report</h1>
+		
+			<footer>
+				<h1 ><p>O F T E N <small>- The FlashCard Application</small></p></h1>
+			</footer>
+		</div>
+		<h2 class="main_heading">PROGRESS REPORT FOR {{data['user']['month_year']}}</h2>
+		<div id="contents" >
+			<div align="center" class="user_details">
+				<h4>Name: {{data['user']['fname']}}  {{data['user']['lname']}}<br>
+				<!-- <h4>Number of Decks: {{decks_count}}</h4> -->
+				Email: {{data['user']['email']}}</h4>
+			</div>
+			<div class="decks_details">
+				<table>
+					<tr>
+						<th>Deck Title</th>
+						<th>% change in #cards</th>
+						<th>Accuracy till now</th>
+						<th>Accuracy for {{data['user']['month_year']}}</th>
+						<th>Times Reset</th>
+					</tr>
+					{%for deck in data['decks']%}
+					<tr>
+						<td>{{deck['deckTitle']}}
+							{%if deck['new']%}<b> NEW </b>{%endif%}
+						</td>
+						<td>
+							{%if deck['cards_change']=='NS'%}
+								No Cards Added Yet
+							{%else%}
+								{%if deck['cards_change'][0]=='S'%}
+									Started with {{deck['cards_change'][1:]}} Cards
+								{%else%}
+									{{deck['cards_change']}}
+								{%endif%}
+							{%endif%}
+						</td>
+						<td>
+							{%if deck['accuracy_total']=='N'%}
+								Not revised yet
+							{%else%}
+
+								{{deck['accuracy_total']}}
+							{%endif%}
+						</td>
+						<td>
+							{%if deck['accuracy_monthly']=='N'%}
+								Not revised this month
+							{%else%}
+								{{deck['accuracy_monthly']}}
+							{%endif%}
+
+						</td>
+						<td>{{deck['Mtimes_reset']}}</td>
+
+					</tr>
+					{%endfor%}
+				</table>
+			</div>
+
+			<div class="performance_section">
+				<h3><u>Closer look on Cards' difficulty</u></h3>
+				{%if data['decks']|length==0%}
+				<h5>No Decks Added Yet</h5>
+				{%else%}
+					<h4>Number of Cards: {{data['cards']['num_cards']}} </h4>
+				
+					{%if data['cards']['num_cards']==0%}
+					<h5>No Cards Added Yet</h5>
+					{%else%}
+					<ul>
+						<li>#Cards whose difficulty has now been set:{{data['cards']['0-S']}}</li>
+						<li>#Cards whose difficulty has been unset:{{data['cards']['S-0']}}</li>
+						<li>#Cards whose difficulty has increased from <strong>EASY</strong> to <strong>MEDIUM</strong>:{{data['cards']['1-2']}}</li>
+						<li>#Cards whose difficulty has increased from <strong>EASY</strong> to <strong>DIFFICULT</strong>:{{data['cards']['1-3']}}</li>
+						<li>#Cards whose difficulty has increased from <strong>MEDIUM</strong> to <strong>DIFFICULT</strong>:{{data['cards']['2-3']}}</li>
+						<li>#Cards whose difficulty has decreased from <strong>MEDIUM</strong> to <strong>EASY</strong>:{{data['cards']['2-1']}}</li>
+						<li>#Cards whose difficulty has decreased from <strong>DIFFICULT</strong> to <strong>MEDIUM</strong>:{{data['cards']['3-2']}}</li>
+						<li>#Cards whose difficulty has decreased from <strong>DIFFICULT</strong> to <strong>EASY</strong>:{{data['cards']['3-1']}}</li>
+						<li>#Cards whose difficulty has <strong>NOT CHANGED</strong>:{{data['cards']['N']}} </li>
+					</ul>
+					{%endif%}
+				{%endif%}
+			</div>
+			<div class="discipline_section">
+				<h3><u>A look at your discipline</u></h3>
+				<ul>
+					<li>Number of Reminders Sent: {%if data['user']['num_reminders_monthly']=='NA'%}NOT OPTED FOR IT{%else%}{{data['user']['num_reminders_monthly']}}{%endif%}</li>
+					<li>Percentage change in #Decks: {{data['user']['decks_change']}}</li>
+					<li>Days NOT visited the Application: {{data['user']['Mdays_not_visited']}}</li>
+					<li>Days NOT revised: {{data['user']['Mdays_not_revised']}}</li>
+				</ul>
+			</div>
+			<p class="ending">
+			----END OF REPORT----<br>
+		
+			</p>
+			<p class="contact">
+			Contact: 21f1000075@student.onlinedegree.iitm.ac.in
+		
+			</p>
+
+
+		</div>
+		
+	
+	
+</body>
+</html>

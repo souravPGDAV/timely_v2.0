@@ -1,0 +1,7 @@
+1.add subjects to classes?
+2. delete registered column of teachers? 
+
+AFTER REPLIT:
+3. Login loading...
+4. Confirmation loading
+5. add input="time"

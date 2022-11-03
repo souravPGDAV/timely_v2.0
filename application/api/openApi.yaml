@@ -1,0 +1,991 @@
+openapi: 3.0.0
+info:
+  title: OFTEN-The FlashCard Application
+  description: >
+  
+    <div><h2>MAD- II Project</h2>
+    <ul>
+      <li>
+        To get Authentication-Token, make a POST request to <b>http://localhost:5000/login?include_auth_token</b> with email and password.
+      </li>
+      <li>To register a user, make a POST request to <b>http://localhost:5000/register</b> with body as a URLSearchParams Object with fields - 'email', 'password', 'password_confirm', 'fname', 'lname'. Response shall be a HTML file with errors, if any, in <i>ul</i> otherwise shall redirect to '/'.
+      </li>
+    </ul>
+    </div>
+
+    <h3> User Table Schema </h3> 
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td>id</td>
+        <td>Integer</td>
+        <td>Primary Key</td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td>String</td>
+        <td>Unique & Not Null</td>
+      </tr>
+      <tr>
+        <td>password</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>
+      <tr>
+        <td>fname</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>      
+      <tr>
+        <td>lname</td>
+        <td>String</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>last_visited</td>
+        <td>Date</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Mreminders_sent</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>
+     <tr>
+        <td>Mdays_not_visited</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>
+      <tr>
+        <td>Mdays_not_revised</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>
+      <tr>
+        <td>Mdecks_at_start</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>  
+      <tr>
+        <td>active</td>
+        <td>Boolean</td>
+        <td></td>
+      </tr>  
+      <tr>
+        <td>fs_uniquifier</td>
+        <td>String</td>
+        <td>Unique=True, Not Null=True</td>
+      </tr>
+      <tr>
+        <td>dont_send_daily_reminders</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>
+      <tr>
+        <td>dont_send_monthly_report</td>
+        <td>Integer</td>
+        <td>Default=0</td>
+      </tr>
+      <tr>
+        <td>roles </td>
+        <td>Integer</td>
+        <td>Primary Key</td>
+      </tr>                  
+    </tbody>
+    </table>
+
+    <h3> Decks Table Schema </h3> 
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td>deck_code</td>
+        <td>Integer</td>
+        <td>Primary Key, Auto Increment</td>
+      </tr>
+      <tr>
+        <td>user_id</td>
+        <td>Integer</td>
+        <td>Foreign Key(users.id), Not Null, Primary Key</td>
+      </tr>
+      <tr>
+        <td>title</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>
+      <tr>
+        <td>deck_lang</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>        
+      <tr>
+        <td>num_cards</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>
+      <tr>
+        <td>num_revised</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+      <tr>
+        <td>num_correct_revised</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+      <tr>
+        <td>last_revised</td>
+        <td>DateTime</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>date_added</td>
+        <td>DateTime</td>
+        <td></td>
+      </tr>    
+      <tr>
+        <td>Mtimes_revised</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+      <tr>
+        <td>Mtimes_correctly_revised</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+      <tr>
+        <td>Mnum_cards</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+      <tr>
+        <td>Mtimes_reset</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+    </tbody>
+    </table>
+
+
+    <h3> cards Table Schema </h3> 
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td>card_code</td>
+        <td>Integer</td>
+        <td>Primary Key, Auto Increment</td>
+      </tr>
+      <tr>
+        <td>deck_code</td>
+        <td>Integer</td>
+        <td>Foreign Key (decks.deck_code), Primary Key, Not Null</td>
+      </tr>
+      <tr>
+        <td>username</td>
+        <td>String</td>
+        <td>Foreign Key (users.ud), Primary Key, Not Null</td>
+      </tr>
+      <tr>
+        <td>front</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>
+       <tr>
+        <td>back</td>
+        <td>String</td>
+        <td>Not Null</td>
+      </tr>
+      <tr>
+        <td>difficulty</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>
+      <tr>
+        <td>correct_ans</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>
+      <tr>
+        <td>num_ans</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>
+      <tr>
+        <td>last_revised</td>
+        <td>DateTime</td>
+        <td></td>
+      </tr>  
+      <tr>
+        <td>Mdifficulty</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr> 
+      <tr>
+        <td>Mcorrect_revisions</td>
+        <td>Integer</td>
+        <td>default=0</td>
+      </tr>  
+    </tbody>
+    </table>
+
+    <h3> In case of an error </h3> 
+    <p>Server shall send a 400 response error with an 'error' field(String) in the response body.</p>"
+
+  version: 2.0.0
+servers:
+  - url: http://127.0.0.1:5000/
+paths:
+  /api:
+    description: CRAWLER ENDPOINT-For getting other endpoints of the Application API
+    get:
+      description: Operation to get other URLs
+      
+      responses:
+        '200':
+          description: Request Successful
+          content:
+            application/json:
+              schema:
+                title: urls
+                type: object
+                properties:
+                  user_api:
+                    type: object
+                    properties:
+                      link:
+                        type: string
+                        example: /api/user
+                        minLength: 1
+                      methods:
+                        type: array
+                        items:
+                          type: string
+                        example: ['GET','POST']
+                          
+                        # type: string
+                        # example: 's'
+                  decks_api:
+                    type: object
+                    properties:
+                      link:
+                        type: string
+                        example: '/api/decks'
+                      methods:
+                        type: array
+                        items:
+                          type: string
+                        example: ['GET','PUT','POST','DELETE']
+                  cards_api:
+                    type: object
+                    properties:
+                      link:
+                        type: string
+                        example: '/api/cards'
+                      methods:
+                        type: array
+                        items:
+                          type: string
+                        example: ['GET','PUT','POST','DELETE']
+                      params:
+                        type: array
+                        items:
+                          type: string
+                        example: ['deckCode']
+                          
+        '500':
+          description: Internal Server Error
+       
+
+    
+
+  /api/user:
+    description: End point to get user details
+    get:
+      description: Operation to create the user resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+      responses:
+        '200':
+          description: User Details
+          content:
+            application/json:
+              schema:
+                title: user object
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    example: 2
+                  fname:
+                    type: string
+                    example: Keshav
+                  lname:
+                    type: string
+                    example: Surya
+                  count_decks of decks:
+                    type: integer
+                    example: 0
+                  dont_send_monthly_report:
+                    type: integer
+                    example: 2
+                  dont_send_daily_reminders:
+                    type: integer
+                    example: 1
+        
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: AuthToken is Required
+    put:
+      description: Operation to update the user resource
+      parameters:
+        - in: header
+          name: AuthToken
+          required: true
+          schema:
+            type: string
+            example: AnauthToken
+     
+              
+        # - in: s
+        #   name: fname
+        #   required: true
+        #   schema:
+        #     type: string
+        #     example: Keshav
+        # - in: query
+        #   name: lname
+        #   required: true
+        #   schema:
+        #     type: string
+        #     example: Anand
+        # - in: body
+        #   name: deck_code
+        #   required: true
+        #   schema:
+        #     type: string
+        #     example: userone0001
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fname:
+                  type: string
+                  example: Keshava
+                lname:
+                  type: string
+                  example: Anand
+                dont_send_monthly_report:
+                  type: integer
+                  example: 2
+                dont_send_daily_reminders:
+                  type: integer
+                  example: 0
+                  
+      responses:
+        '200':
+          description: Successfully updated
+         
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: dont_send_daily_reminders is required & should be either 0 or 1
+    delete:
+      description: Operation to delete the user resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+            
+      
+      responses:
+        '204':
+          description: Successfully Deleted
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad Request
+    
+
+  /api/decks:
+    description: Url to CRUD deck resource
+    get:
+      description: Operation to get the decks
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+        
+      
+      responses:
+        '200':
+          description: Successfully sent
+          content:
+            application/json:
+              schema:
+                title: decks
+                type: object
+                properties:
+                  1:
+                    type: object
+                    properties:
+                      deck_code:
+                        type: integer
+                        example: 2
+                      deckTitle:
+                        type: string
+                        example: Kahaani
+                      count_cards:
+                        type: integer
+                        example: 3
+                      deckLanguage:
+                        type: string
+                        example: Hindi
+                      count_revisions:
+                        type: integer
+                        example: 7
+                      count_correct_revisions:
+                        type: integer
+                        example: 3
+                      last_revised:
+                        type: string
+                        example: 18/02/2022T09:08:20021
+                  2:
+                    type: object
+                    properties:
+                      deck_code:
+                        type: integer
+                        example: 3
+                      deckTitle:
+                        type: string
+                        example: NextDECK
+                      count_cards:
+                        type: integer
+                        example: 0
+                      deckLanguage:
+                        type: string
+                        example: English
+                      count_revisions:
+                        type: integer
+                        example: 0
+                      count_correct_revisions:
+                        type: integer
+                        example: 0
+                      last_revised:
+                        type: string
+                        example: 
+        
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+        description: <ul>
+                        <li> Request Body should be in json when following operations are to be performed ->
+                          <ol>
+                            <li><b>UPDATE</b> => with 'requirement' as 'update' along 'deckCode', 'deckLanguage' and 'deckTitle' 
+                            </li>
+                            <li><b>RESET</b> => with 'requirement' as 'reset'</li>
+                            <li><b>EXPORTING A DECK AS CSV</b> => with 'requirement' as 'get_csv'</li>
+                            <li><b>GETTING DECKS IN SOME ORDER</b> => with 'requirement' as 'get' along 'order' among-
+                              <ol type='a'>
+                                <li><b><b>random</b></b> for random ordered decks
+                                </li>
+                                <li><b><b>l_d</b></b> for decks decreasing as per last_revised time
+                                </li>
+                                <li><b><b>d_l</b></b> for decks increasing as per last_revised time
+                                </li>
+                                <li><b><b>c_i</b></b> for decks increasing as per number of cards
+                                </li>
+                                <li><b><b>c_d</b></b> for decks decreasing as per number of cards
+                                </li>
+                                <li><b><b>serial</b></b> for decks increasing as per number of revisions
+                                </li>
+                              </ol>
+                            </li>
+                          </ol>
+                            <li>Request  Body as form for <b>Importing a csv</b> with 'requirement' as 'import_csv' & <u>csv file in 'file'</u>
+                            </li>
+                      </ul>
+                              
+        parameters:
+          - in: header
+            name: AuthToken
+            required: true
+            schema:
+              type: string
+              example: AnauthToken
+       
+
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requirement:
+                    type: string
+                    example: update
+                  deckCode:
+                    type: integer
+                    example: 2
+                  deckLanguage:
+                    type: string
+                    example: 'updatedLanguage'
+                  deckTitle:
+                    type: string
+                    example: 'updatedTitle'
+                    
+        responses:
+          '200':
+            description: Successfully updated
+           
+          '500':
+            description: Internal Server Error
+          '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: dont_send_daily_reminders is required & should be either 0 or 1
+                   
+
+    
+    delete:
+      description: Operation to delete the deck resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+            
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deckCode:
+                  type: integer
+                  example: 3
+      responses:
+        '204':
+          description: Successfully Deleted
+        '500':
+          description: Internal Server Error
+        '404':
+          description: No such deck found
+    post:
+      description: Operation to create a deck resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deckLanguage:
+                  type: string
+                  example: English
+                deckTitle:
+                  type: string
+                  example: NewTitle
+                
+      responses:
+        '202':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                title: decks
+                type: object
+                properties:
+                  1:
+                    type: object
+                    properties:
+                      deck_code:
+                        type: integer
+                        example: 4
+                      deckTitle:
+                        type: string
+                        example: NewTitle
+                      count_cards:
+                        type: integer
+                        example: 0
+                      deckLanguage:
+                        type: string
+                        example: English
+                      count_revisions:
+                        type: integer
+                        example: 0
+                      count_correct_revisions:
+                        type: integer
+                        example: 0
+                      last_revised:
+                        type: string
+                        example: 
+        
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: deckLanguage is required and should be string
+    
+                    
+
+  /api/cards:
+    description: CRUD card resource
+    get:
+      description: to get card resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+        - in: header
+          name: deckcode
+          required: true
+          schema:
+            type: integer
+            example: 3
+        
+      
+      responses:
+        '200':
+          description: Request Successful
+          content:
+            application/json:
+              schema:
+                title: cards
+                type: object
+                properties:
+                  1:
+                    type: object
+                    properties:
+                      deckCode:
+                        type: integer
+                        example: 2
+                      cardCode:
+                        type: integer
+                        example: 3
+                      cardFront:
+                        type: string
+                        example: Home Minister
+                      cardBack:
+                        type: string
+                        example: Sh. Amit Shah
+                      count_revisions:
+                        type: integer
+                        example: 2
+                      count_correct_revisions:
+                        type: integer
+                        example: 1
+                      cardDifficulty:
+                        type: integer
+                        example: 2
+                      last_revised:
+                        type: string
+                        example: 18/02/2022T09:08:20021
+                  2:
+                    type: object
+                    properties:
+                      deckCode:
+                        type: integer
+                        example: 2
+                      cardCode:
+                        type: integer
+                        example: 1
+                      cardFront:
+                        type: string
+                        example: Defence Minister
+                      cardBack:
+                        type: string
+                        example: Sh. Rajnath Singh
+                      count_revisions:
+                        type: integer
+                        example: 3
+                      count_correct_revisions:
+                        type: integer
+                        example: 2
+                      cardDifficulty:
+                        type: integer
+                        example: 1
+                      last_revised:
+                        type: string
+                        example: 18/02/2022T09:09:13191
+                 
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'No cards in the deck'
+        
+        '500':
+          description: Internal Server Error
+    put:
+        description: <ul>
+                        <li> Request Body should be in json when following operations are to be performed ->
+                          <ol>
+                            <li><b>UPDATE</b> => with 'requirement' as 'update' along 'cardCode', 'cardBack', 'cardFront' and 'cardDifficulty'
+                            </li>
+                            <li><b>RESET</b> => with 'requirement' as 'reset' along 'cardCode'</li>
+                            <li><b>REVISING A CARD</b> => with 'requirement' as 'revise' along 'cardCode', 'correct' (AMONG TRUE/ FALSE), 'time' (OF REVISION), 'deck_full_revised'(AMONG TRUE/ FALSE) and 'difficulty'(NEW DIFFICULTY).</li>
+                            <li><b>GETTING CARDS IN SOME ORDER</b> => with 'requirement' as 'get' along 'order' among-
+                              <ol type='a'>
+                                <li><b><b>random</b></b> for random ordered cards
+                                </li>
+                                <li><b><b>l_d</b></b> for cards decreasing as per difficulty
+                                </li>
+                                <li><b><b>d_l</b></b> for cards increasing as per difficulty
+                                </li>
+                                <li><b><b>serial_d</b></b> for cards decreasing as per number of revisions
+                                </li>
+                                <li><b><b>serial</b></b> for cards increasing as per number of revisions
+                                </li>
+                              </ol>
+                            </li>
+                          </ol>
+                      </ul>
+                              
+        parameters:
+          - in: header
+            name: AuthToken
+            required: true
+            schema:
+              type: string
+              example: AnauthToken
+       
+
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requirement:
+                    type: string
+                    example: update
+                  deckCode:
+                    type: integer
+                    example: 2
+                  deckLanguage:
+                    type: string
+                    example: 'updatedLanguage'
+                  deckTitle:
+                    type: string
+                    example: 'updatedTitle'
+                    
+        responses:
+          '200':
+            description: Successfully updated
+           
+          '500':
+            description: Internal Server Error
+          '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: No such deck found
+                   
+    delete:
+      description: Operation to delete the card resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+        - in: header
+          name: deckcode
+          required: true
+          schema:
+            type: integer
+            example: 3
+            
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardCode:
+                  type: integer
+                  example: 3
+      responses:
+        '200':
+          description: Successfully Deleted
+        '500':
+          description: Internal Server Error
+        '404':
+          description: No such card/deck found
+        '400':
+          description: Bad request
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_code:
+                      type: string
+                      example: cardCode is required and should be an integer
+    post:
+      description: Operation to create a card resource
+      parameters:
+        - in: header
+          name: Authentication-Token
+          required: true
+          schema:
+            type: string
+            example: AnAuthToken
+        - in: header
+          name: deckcode
+          required: true
+          schema:
+            type: integer
+            example: 3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardFront:
+                  type: string
+                  example: English
+                cardBack:
+                  type: string
+                  example: NewTitle
+                cardDifficulty:
+                  type: integer
+                  example: 2
+                
+      responses:
+        '202':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                title: decks
+                type: object
+                properties:
+                  3:
+                    type: object
+                    properties:
+                      deck_code:
+                        type: integer
+                        example: 4
+                      deckTitle:
+                        type: string
+                        example: NewTitle
+                      count_cards:
+                        type: integer
+                        example: 0
+                      deckLanguage:
+                        type: string
+                        example: English
+                      count_revisions:
+                        type: integer
+                        example: 0
+                      count_correct_revisions:
+                        type: integer
+                        example: 0
+                      last_revised:
+                        type: string
+                        example: 
+        
+        '500':
+          description: Internal Server Error
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: deckLanguage is required and should be string
+          
+  
