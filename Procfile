@@ -1,1 +1,1 @@
-startup: python3 main.py
+Web: python3 main.py
