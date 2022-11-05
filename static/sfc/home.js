@@ -292,7 +292,7 @@ const home={
 
                   // Parameters to pass to OAuth 2.0 endpoint.
                   var params = {'client_id': '973193860513-5oplql8s9618p5ddith5f6v3h9089sjn.apps.googleusercontent.com',
-                                'redirect_uri': 'http://localhost:5000',
+                                'redirect_uri': this.$store.getters.get_base_url,
                                 'response_type': 'token',
                                 'scope': 'https://www.googleapis.com/auth/userinfo.profile',
                                 'include_granted_scopes': 'true',
