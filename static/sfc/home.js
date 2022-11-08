@@ -1,7 +1,20 @@
 const home={
-    template:`<div>
-                
+    template:`<div class="main">
+            
+            <nav class="navbar sticky-top navbar-dark bg-primary container-fluid">
+                  <a class="navbar-brand" href="#"><h2>TIMELY</h2></a>
+                  <span class="navbar-text">
+                        <div class="nav-item" v-if="this.logged_in">Welcome {{this.given_name}}!</div>
+                        <div class="nav-item active signout" v-if="this.logged_in" @click="g_signout()"><b>SIGNOUT</b></div>
+                        <button class="btn btn-light" v-if="!(g_doing || logged_in)" v-on:click="g_signin()"><img width="20px" style="margin-top:0px;margin-left:0px; margin-right:4px" alt="Google sign-in" 
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />Google</button>
 
+                            <button class="btn btn-outline-primary disabled" v-if="this.g_doing && !this.logged_in"><div class="spinner-border text-light" role="status" align="center" p-6 my-5>
+                            <span class="visually-hidden">Loading...</span></div></button>
+                            
+                    </span>
+
+                </nav>
                 
               <div class="container">                   
                 <div class="alert alert-warning" role="alert" v-if="give_errors.length>0">
@@ -14,48 +27,48 @@ const home={
                 </div>
                 
                 <br>
+
                 <div align="right">
-                <div align="center">
-                          <div class="spinner-border text-primary" role="status" v-if="!this.modal_loaded" align="center" p-6 my-5>
-                            <span class="visually-hidden">Loading...</span>
-                </div>
                 
 
-                <button class="btn btn-outline-primary" v-if="!(g_doing || logged_in)" v-on:click="g_signin()"><img width="20px" style="margin-top:0px;margin-left:0px; margin-right:4px" alt="Google sign-in" 
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />Google</button>
-                <button class="btn btn-outline-primary disabled" v-if="this.g_doing && !this.logged_in"><div class="spinner-border text-primary" role="status" align="center" p-6 my-5>
-                            <span class="visually-hidden">Loading...</span></div></button>
-                <!--button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forgotPass" v-if="this.loaded && !ls_check" v-on:click="p_reset_modal()">I Forgot Password :( </button-->
-                <button class="btn btn-primary" @click="$router.push('dashboard')" v-if="this.logged_in">My Dashboard</router-link></button>
-                <button class="btn btn-primary" @click="g_signout()" v-if="this.logged_in">Sign Out</button>
+                
+                
+                
+                
+                <!--button class="btn btn-primary" @click="g_signout()" v-if="this.logged_in">Sign Out</button-->
             
 
                 
                 </div>
-                <div v-if="this.logged_in">Welcome {{this.given_name}}!</div>
-                <hr>
-                <div class="btn-group" role="group" aria-label="Basic example" align="left">
-                  <button type="button" class="btn  btn-outline-primary" :disabled="day_choice==-1" @click="day_choice=-1">Yesterday</button>
-                  <button type="button" class="btn  btn-outline-primary" :disabled="day_choice==0"  @click="day_choice=0">Today</button>
-                  <button type="button" class="btn btn-outline-primary" :disabled="day_choice==1"  @click="day_choice=1">Tomorrow</button>
+                
+                <div class="text-center">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" class="btn  btn-outline-primary" :disabled="day_choice==-1" @click="day_choice=-1">Yesterday</button>
+                      <button type="button" class="btn  btn-outline-primary" :disabled="day_choice==0"  @click="day_choice=0">Today</button>
+                      <button type="button" class="btn btn-outline-primary" :disabled="day_choice==1"  @click="day_choice=1">Tomorrow</button>
+                    </div>
                 </div>
+                <br>
                 <h4 align="center" v-if="day_choice==0">Today's Classes:</h4>
                 <h4 align="center" v-if="day_choice==-1">Yesterday's Classes:</h4>
                 <h4 align="center" v-if="day_choice==1">Tomorrow's Classes:</h4>
                 <br>
-                <div align="center">
-                          <div class="spinner-border text-primary" role="status" v-if="!this.class_loaded" align="center" p-6 my-5>
-                            <span class="visually-hidden">Loading...</span>
-                </div>
+              
                 
 
-                <p align="center" ><i>Next <b>TIMELY</b> Teacher of the Week is being chosen. WAIT FOR IT!</i></p>
-                <div v-if="Object.keys(classes).length==0">Hurray! No classes here.</div>
+                <!--p align="center" ><i>Next <b>TIMELY</b> Teacher of the Week is being chosen. WAIT FOR IT!</i></p-->
+                <div align="center">
+                          <div class="spinner-border text-primary" role="status" v-if="!this.day_choice_done" align="center" p-6 my-5>
+                            <span class="visually-hidden">Loading...</span>
+                </div>
+                <div v-if="Object.keys(classes).length==0 && this.day_choice_done">Hurray! No classes here.</div>
+                <!--div class="card_collection" align="center" v-if="Object.keys(classes).length>0"-->
                 <div class="row row-cols-2 row-cols-md-2 g-4" align="center" v-if="Object.keys(classes).length>0">
+                
                         
                         <div   v-for="t in classes">
                             
-                                <class_card :class_details="t" ></class_card>
+                                <class_card :class_details="t" class="class_card"></class_card>
                                 
                         </div >
                         
@@ -91,6 +104,7 @@ const home={
             logged_in:false,
             given_name:"",
             role:-1,
+            day_choice_done:false
         }
 
     },
@@ -201,6 +215,7 @@ const home={
                                 
                                 // console.log(data[i])
                             }
+                            this.day_choice_done=true
                             this.class_loaded=true
                             this.$forceUpdate();
                         })
@@ -219,6 +234,7 @@ const home={
         day_choice:function(newVal,oldVal){
             // var g_d=-1
             // if(day_choice==0){g_d=0}
+                    this.day_choice_done=false
                     this.classes={}
                     var b={'get_day':newVal}
                     fetch(this.$store.getters.get_base_url+"/api/classes",{
@@ -243,6 +259,7 @@ const home={
                                 // console.log(data[i])
                             }
                             this.class_loaded=true
+                            this.day_choice_done=true
                             this.$forceUpdate();
                         })
 

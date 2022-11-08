@@ -11,8 +11,7 @@ from application.database import db
 from flask_security import Security, SQLAlchemySessionUserDatastore, SQLAlchemyUserDatastore, auth_required, UserDatastore, registerable
 from application.models import *
 #from flask_login import LoginManager
-#from application.workers2 import *
-#from application.tasks2 import *
+
 from flask_mail import Mail
 #from application import workers
 #from application import tasks
@@ -89,7 +88,8 @@ app = create_app()
 from application.controllers.user_c import *
 from application.api.api_vue import *
 
-
+from application.tasks2 import *
+from application.workers2 import *
     
 
     

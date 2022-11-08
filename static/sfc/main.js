@@ -378,6 +378,13 @@ Vue.component('class_card',{
             this.last_updated=hrs.toString()+":"+mins.toString()+" ON "+month+" "+date.toString()
             
         }
+        if (this.class_details.chances=='Low'){
+            this.class_chance_class='text-danger'
+        }
+        // console.log()
+        if(this.class_details.chances=='High'){
+            this.class_chance_class='text-success'
+        }
         // console.log(this.date)
     },
     computed:{
@@ -415,6 +422,7 @@ Vue.component('class_card',{
             c_role:-1,
             voted_class:false,
             my_vote:0,
+            class_chance_class:'text-primary'
         }
     },
 
@@ -432,8 +440,8 @@ Vue.component('class_card',{
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                          <h6 v-if="this.confirm_class==true">Sure about confirming the class with id {{class_details.class_id}}?</h6>
-                          <h6 v-if="this.confirm_class==false">Sure about aborting the class with id {{class_details.class_id}}?</h6>
+                          <h6 v-if="this.confirm_class==true">Sure about confirming the class at {{class_details.start_time}}-{{class_details.end_time}}?</h6>
+                          <h6 v-if="this.confirm_class==false">Sure about aborting the class at {{class_details.start_time}}-{{class_details.end_time}}?</h6>
                           
                           
                       </div>
@@ -523,8 +531,8 @@ Vue.component('class_card',{
                         <button type="button" class="btn btn-info btn-sm" v-if="change_helper==1 || change_helper==3" data-bs-toggle="modal" :data-bs-target="'#'+updationID" v-on:click="reset_update_data()">UPDATE</button>
                         </div>
                         <div v-if="this.c_role==1">
-                            <button type="button" class="btn btn-outline-secondary" v-on:click="voted()"  v-if="!this.voted_class">Am not coming</button>
-                            <div v-else class="alert alert-dark" role="alert">
+                            <button type="button" class="btn btn-outline-secondary" v-on:click="voted()"  v-if="!this.voted_class && this.$parent.day_choice!=-1">Am not coming</button>
+                            <div  v-if="this.voted_class" class="alert alert-dark" role="alert">
                               NOT ATTENDING
                               <br>
                             </div>
@@ -532,7 +540,7 @@ Vue.component('class_card',{
                             
                         </div>
                         Voted to Not Attend : {{class_details.absence}}%
-
+                        <span :class="class_chance_class"><b>{{class_details.chances}}</b></span> chances of happening.
                     </div>
                       <div class="card-footer">
                         <div class="spinner-grow spinner-grow-sm text-primary" role="status"></div> Last Updated
@@ -563,7 +571,7 @@ Vue.component('class_card',{
                     else{
                         this.revised_time.setHours(current_hrs+6);
                         this.revised_time.setMinutes(current_mins-30)
-                    // }
+                    }
                     // console.log('at start')
                     // console.log(this.revised_time)
                     var data_sent={'requirement':'confirm','class_id':this.class_details.class_id,'time':this.revised_time.toJSON()}
@@ -599,14 +607,25 @@ Vue.component('class_card',{
                             // this.decks[e].last_revised=null
                             this.confirm_class=true
                             this.change_helper=1
-                            console.log('confirmed,')
+                            this.class_details.chances=data.chances
+                            if (this.class_details.chances=='Low'){
+                                this.class_chance_class='text-danger'
+                            }
+                            // console.log()
+                            if(this.class_details.chances=='High'){
+                                this.class_chance_class='text-success'
+                            }
+                            if(this.class_details.chances=='Medium'){
+                                this.class_chance_class='text-primary'
+                            }
                             this.$forceUpdate();
                         
                         })
                         .catch(error=>{
                             this.$parent.errors_main.push('Could not confirm class. Internal error')
                         })
-                }},
+                
+            },
                 voted:function(){
                     var data_sent={'requirement':'vote','class_id':this.class_details.class_id,'s_id':localStorage.u_id}
                     fetch(this.$store.getters.get_base_url+"/api/t/classes",{
@@ -777,6 +796,18 @@ Vue.component('class_card',{
                             // this.decks[e].count_correct_revisions=0
                             // this.decks[e].last_revised=null
                             this.confirm_class=false
+                            // console.log('got data=',data)
+                            this.class_details.chances=data.chances
+                            if (this.class_details.chances=='Low'){
+                                this.class_chance_class='text-danger'
+                            }
+                            // console.log()
+                            if(this.class_details.chances=='High'){
+                                this.class_chance_class='text-success'
+                            }
+                            if(this.class_details.chances=='Medium'){
+                                this.class_chance_class='text-primary'
+                            }
                             this.change_helper=-1
                             this.$forceUpdate();
                         

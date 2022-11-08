@@ -1,6 +1,10 @@
+import os
 from application.database import db
+#imported db as celery beat was not working with application.
 from flask_security import UserMixin, RoleMixin
 from flask_login import login_manager
+
+
 
 
 class Teachers(db.Model):
@@ -23,6 +27,13 @@ class classes(db.Model):
     last_updated=db.Column(db.DateTime)
     absence=db.Column(db.Integer,default=0)
 
+class classes_o(db.Model):
+    class_id=db.Column(db.Integer, autoincrement=True,primary_key=True)
+    start_time=db.Column(db.String(5),nullable=False)
+    end_time=db.Column(db.String(5),nullable=False)
+    room=db.Column(db.Integer,nullable=False)
+    
+
 class Users(db.Model):
     user_id=db.Column(db.Integer, autoincrement=True,primary_key=True)
     email=db.Column(db.String(255), unique=True, nullable=False)
@@ -34,3 +45,7 @@ class Students(db.Model):
     #helps=db.Column(db.Integer,default=0)
     votes=db.Column(db.String(10))
 
+class Proba(db.Model):
+    class_id=db.Column(db.Integer,db.ForeignKey('classes.class_id'),nullable=False,primary_key=True)
+    status=db.Column(db.Integer,nullable=False,primary_key=True)
+    final=db.Column(db.Integer,nullable=False)

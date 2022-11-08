@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Home Page</title>
+		<title>TIMELY</title>
 		<meta charset="utf-8">
 		
     	
@@ -36,34 +36,87 @@
 				console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 				}
 			
-                  function signOut() {
-                    var auth2 = gapi.auth2.getAuthInstance();
-                    auth2.signOut().then(function () {
-                      console.log('User signed out.');
-                    });
-                  }
+        function signOut() {
+          var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function () {
+            console.log('User signed out.');
+          });
+        }
+     //    window.on('resize', function() {
+			  // if(window.width() > 400) {
+			  // 	 console.log('function works')
+			  //     $('#div.card_collection').addClass("row row-cols-2 row-cols-md-2 g-4");
+			  //     // $('#body').removeClass('limit400');
+			  // }
+			  // else{
+			  //     $('#body').addClass('limit400');
+			  //     $('#body').removeClass('limit1200');
+			  // }
+			// })
                 
 		</script>
 		
-		<div class="container-fluid p-3 bg-primary text-white text-center">
-			<!-- <img src="../static/banner_logo.png"> -->
+		<!-- <div class="container-fluid p-3 bg-primary text-white text-center">
+			
             <h1 align="center">TIMELY</h1>
         </div>
-
+ -->
 		<div id="app">
 				<router-view :key="$route.fullPath"></router-view>
 		</div>
 		
-	 <!-- <style>
-		#footer {
-		  position: fixed;
-		  left: 0;
-		  bottom: 0;
-		  width: 100%;
-		  text-align: center;
-		}
-		</style>
-	  --><div id="footer" class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);bottom:0;">
+	 <style>
+
+                .signout{
+                    color: white;
+                    cursor: pointer;
+                }
+
+                body {
+								   overflow-x: hidden;
+								}
+                .navbar-brand{
+                	padding-left: 20px;
+                }
+                .main{
+                	margin-bottom: 80px;
+
+                }
+                .navbar-text{
+                	padding-right: 20px;
+                }
+                /*.card_collection {
+					            align-items: center;
+					      
+					            display: inline-flex;
+					            justify-content: space-evenly;
+					            min-height: 100%;
+					            width: 100vw;
+					        }*/
+					        .class_card{
+
+					        }
+                @media screen and (max-aspect-ratio: 3 / 4) and (min-height: 32rem), only screen and (max-width: 48.688rem) and (min-height: 32rem){
+                	.navbar-brand{
+											padding-left: 0px;
+                	}
+                	.navbar-text{
+                	padding-right: 0px;
+                	}
+                	/*.card_collection {
+			            align-items: center;
+			            flex-direction: column;
+			            justify-content: center;
+			            width: calc(100% - 2rem);
+			            padding: 0 1rem;
+			          	}*/
+			          	.class_card{
+			          		/*margin-left: 100px;*/
+			          	}
+                }
+  </style>
+
+	  --><div id="footer" class="fixed-bottom text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);bottom:0;">
 		    © 2022 Copyright Sourav Yadav
 		</footer>
 	 <script type="module" src="../static/sfc/main.js"></script>	

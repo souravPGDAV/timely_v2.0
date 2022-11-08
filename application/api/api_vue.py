@@ -1,3 +1,4 @@
+import pandas as pd
 from flask import Flask,request,session,json,send_file,jsonify,make_response
 import flask_login
 from flask_restful import Resource, Api
@@ -22,7 +23,29 @@ from application.api.funcs import *
 import requests
 
 
-
+def class_chances(class_id):
+    chances=None
+    t=classes.query.filter(classes.class_id==class_id).first()
+    p_result=Proba.query.filter(Proba.class_id==class_id).all()
+    ab=int(get_absence(t.absence,len(Students.query.filter().all())))
+    if p_result:
+        for c in p_result:
+            if c.status==t.status:
+                if c.final<0.3:
+                    
+                    chances='Low'
+                elif c.final<0.6:
+                    if ab>=50:
+                        chances='Low'
+                    else:
+                        chances='Medium'
+                else:
+                    if ab>=60:
+                        chances='Medium'
+                    else:
+                        chances='High'
+    return chances
+        
 def get_current_user(headers):
     print('headers=',headers)
     if 'Authentication-Token' in headers:
@@ -36,7 +59,10 @@ def get_current_user(headers):
 print('here')
 
 def get_absence(ab,students):
-    ans=str(int((ab/students)*100))
+    try:
+        ans=str(int((ab/students)*100))
+    except ZeroDivisionError :
+        ans='0'
     return ans
 
 
@@ -341,7 +367,9 @@ class apiTClasses(Resource):
                 class_obj.status=1
                 class_obj.last_updated=parser.parse(time)
                 db.session.commit()
-                return '',200
+                chances=class_chances(class_obj.class_id)
+                
+                return marshal({'chances':chances},{'chances':fields.String}),200
 
             return '',400
 
@@ -360,7 +388,9 @@ class apiTClasses(Resource):
                 class_obj.absence+=1
                 student_obj.votes+=str(class_obj.class_id)
                 db.session.commit()
-                return '',200
+                chances=class_chances(class_obj.class_id)
+                
+                return marshal({'chances':chances},{'chances':fields.String}),200
 
             return '',400
         
@@ -370,7 +400,9 @@ class apiTClasses(Resource):
                 class_obj.status=-1
                 class_obj.last_updated=parser.parse(time)
                 db.session.commit()
-                return '',200
+                chances=class_chances(class_obj.class_id)
+                
+                return marshal({'chances':chances},{'chances':fields.String}),200
 
             return '',400
         
@@ -453,16 +485,21 @@ api.add_resource(apiTClasses,'/api/t/classes')
 class apiClasses(Resource):
     
     def put(self):
+        
         req_body=request.get_json()  
         try:
             get_day=req_body['get_day']
+            print('here=',get_day)
+            
         except:
             print('here=',get_day)
             return marshal({'error':'get_day is required and should be a number(-1,0,1) for this requirement'},{'error':fields.String}),400
         
         today=datetime.today().weekday()
-        
+        print('today=',today)
         q_result=classes.query.all()
+        #df_p=pd.read_excel('https://docs.google.com/spreadsheets/d/1eayDVbgT5OyTYFNdMnQ7Qs0ubB8bnYlE/edit?usp=sharing&ouid=116290909138343351929&rtpof=true&sd=true')
+        #print(df_p)
         
         class_details={}
         class_details['class_id']=fields.Integer
@@ -478,12 +515,14 @@ class apiClasses(Resource):
         class_details['subject']=fields.String
         class_details['contradicted']=fields.Boolean
         class_details['absence']=fields.String
+        class_details['chances']=fields.String
         resource_fields={}
         result={}
         for t in q_result:
-            print('for ',t,', in loop')
+            print('for ',t,', in loop and t.day=',t.day)
             proceed=False
             if get_day==0:
+                
                 if today==t.day:
                     proceed=True
             if get_day==1:            
@@ -503,28 +542,29 @@ class apiClasses(Resource):
             
            
             if proceed:
-         
-                temp={}
-                temp['class_id']=t.class_id
-                temp['teacher_id']=t.teacher_id
-                temp['day']=t.day
-                temp['start_time']=t.start_time
-                temp['end_time']=t.end_time
-                temp['status']=t.status
-                temp['room']=t.room
-                t_details=Teachers.query.filter(Teachers.t_id==t.teacher_id).first()
-                temp['helps']=t_details.helps
-                temp['t_fname']=t_details.fname
-                temp['t_lname']=t_details.lname
-                temp['subject']=t_details.subject
-                temp['contradicted']=t.contradicted
-                temp['absence']=get_absence(t.absence,len(Students.query.filter().all()))
-                if t.last_updated:
-                    temp['last_updated']=t.last_updated.isoformat()
-                else:
-                    temp['last_updated']=None
-                resource_fields[t.class_id]=fields.Nested(class_details)
-                result[t.class_id]=temp.copy()
+                    chances=class_chances(t.class_id)
+                    temp={}
+                    temp['class_id']=t.class_id
+                    temp['teacher_id']=t.teacher_id
+                    temp['day']=t.day
+                    temp['start_time']=t.start_time
+                    temp['end_time']=t.end_time
+                    temp['status']=t.status
+                    temp['room']=t.room
+                    t_details=Teachers.query.filter(Teachers.t_id==t.teacher_id).first()
+                    temp['helps']=t_details.helps
+                    temp['t_fname']=t_details.fname
+                    temp['t_lname']=t_details.lname
+                    temp['subject']=t_details.subject
+                    temp['contradicted']=t.contradicted
+                    temp['absence']=get_absence(t.absence,len(Students.query.filter().all()))
+                    temp['chances']=chances
+                    if t.last_updated:
+                        temp['last_updated']=t.last_updated.isoformat()
+                    else:
+                        temp['last_updated']=None
+                    resource_fields[t.class_id]=fields.Nested(class_details)
+                    result[t.class_id]=temp.copy()
         print(result)
         return marshal(result,resource_fields),200
     
