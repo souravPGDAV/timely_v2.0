@@ -7,7 +7,7 @@ const home={
                         <div class="nav-item" v-if="this.logged_in">Welcome {{this.given_name}}!</div>
                         <div class="nav-item active signout" v-if="this.logged_in" @click="g_signout()"><b>SIGNOUT</b></div>
                         <button class="btn btn-light" v-if="!(g_doing || logged_in)" v-on:click="g_signin()"><img width="20px" style="margin-top:0px;margin-left:0px; margin-right:4px" alt="Google sign-in" 
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />Google</button>
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" /><b>Google</b></button>
 
                             <button class="btn btn-outline-primary disabled" v-if="this.g_doing && !this.logged_in"><div class="spinner-border text-light" role="status" align="center" p-6 my-5>
                             <span class="visually-hidden">Loading...</span></div></button>
