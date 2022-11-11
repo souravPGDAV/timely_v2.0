@@ -343,7 +343,7 @@ Vue.component('class_card',{
         // this.$store.commit('reset_decks_for_revision')
         // this.updationID="UPDATEIT"+this.deck_loop.deckCode+"UPDATEIT"
         if('role' in localStorage){
-            console.log('role=',localStorage.role)
+            // console.log('role=',localStorage.role)
             if(localStorage.role=="student"){this.c_role=1}
             else{
                 if(localStorage.role=="teacher"){
@@ -354,6 +354,9 @@ Vue.component('class_card',{
         }
         this.updationID="UPDATEIT"+this.class_details.class_id+"UPDATEIT"
         this.confirmationID="COMFIRMIT"+this.class_details.class_id+"COMFIRMIT"
+        // now=new Date()      
+        // now=new Date(this.revised_time)
+        // if (now.getHours()>this.start_time)
         this.d_room=this.class_details.room
         this.room=this.d_room
         this.start_time=this.class_details.start_time
@@ -422,7 +425,8 @@ Vue.component('class_card',{
             c_role:-1,
             voted_class:false,
             my_vote:0,
-            class_chance_class:'text-primary'
+            class_chance_class:'text-primary',
+            time_passed:false,
         }
     },
 
@@ -480,7 +484,7 @@ Vue.component('class_card',{
                             
                             <label>End Time: </label>
                             
-                            <input type="time" m v-model="end_time" :disabled="!enable_updateForm" required/><br><br>
+                            <input type="time"  v-model="end_time" :disabled="!enable_updateForm" required/><br><br>
 
                           </form>
                           
@@ -523,9 +527,13 @@ Vue.component('class_card',{
                             Teacher
                             <span class="badge rounded-pill bg-primary">{{class_details.t_fname}} {{class_details.t_lname}}</span>
                           </li>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Subject
+                            <span class="badge rounded-pill bg-primary">{{class_details.subject}}</span>
+                          </li>
                         </ul>
                         <br>
-                        <div v-if="change_helper!=-1 && this.c_role==0">
+                        <div v-if="change_helper!=-1 && this.c_role==0 && this.$parent.day_choice!=-1">
                         <button type="button" class="btn btn-success btn-sm" v-if="change_helper!=1 && change_helper!=3" data-bs-toggle="modal" :data-bs-target="'#'+confirmationID" v-on:click="want_to_confirm()">CONFIRM!</button>
                         <button type="button" class="btn btn-danger btn-sm" v-if="change_helper!=-1" data-bs-toggle="modal" :data-bs-target="'#'+confirmationID" v-on:click="want_to_abort()">ABORT :(</button>
                         <button type="button" class="btn btn-info btn-sm" v-if="change_helper==1 || change_helper==3" data-bs-toggle="modal" :data-bs-target="'#'+updationID" v-on:click="reset_update_data()">UPDATE</button>
@@ -563,7 +571,7 @@ Vue.component('class_card',{
                     this.original_time=new Date(this.revised_time)
                     let current_mins=this.revised_time.getMinutes()
                     let current_hrs=this.revised_time.getHours()
-                    console.log("originial time for js=",this.revised_time)
+                    // console.log("originial time for js=",this.revised_time)
                     if(30-current_mins>0){
                         this.revised_time.setMinutes(current_mins+30)
                         this.revised_time.setHours(current_hrs+5)
@@ -576,7 +584,7 @@ Vue.component('class_card',{
                     // console.log(this.revised_time)
                     var data_sent={'requirement':'confirm','class_id':this.class_details.class_id,'time':this.revised_time.toJSON()}
                     
-                    console.log("in func and atoken=",this.$store.getters.get_a_token)
+                    // console.log("in func and atoken=",this.$store.getters.get_a_token)
                      fetch(this.$store.getters.get_base_url+"/api/t/classes",{
                             headers:{'Content-Type':'application/json',                            
                             'Authentication-Token':this.$store.getters.get_a_token},method:"PUT",
@@ -642,7 +650,7 @@ Vue.component('class_card',{
                             // this.change_helper=4
                             this.voted_class=true
                             localStorage.votes+=this.class_details.class_id.toString()
-                            console.log('now localStorage.votes=',localStorage.votes)
+                            // console.log('now localStorage.votes=',localStorage.votes)
 
                             location.reload()
                         })

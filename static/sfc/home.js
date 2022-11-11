@@ -142,7 +142,7 @@ const home={
                             // console.log('here, received resp=',resp.json())
                             return resp.json()
                         }).then(data=>{
-                            console.log('recvd=',data)
+                            // console.log('recvd=',data)
                             if (!data){
                                 this.$store.commit('add_error','You don\'t seem to require a login to this application. Use it wisely!')
                                 this.logged_in=false;this.g_doing=false;
@@ -165,7 +165,7 @@ const home={
 
                                 
                                 // console.log('localStorage m role=',localStorage.role,' and this.role=',this.role)   
-                                console.log('setting a_token=',localStorage.token)
+                                // console.log('setting a_token=',localStorage.token)
                                 
                                 this.given_name=localStorage.given_name 
                                 window.location.href=this.$store.getters.get_base_url
@@ -226,7 +226,7 @@ const home={
     computed:{
         name:function(){
             // console.log('in store current user=',this.$store.getters.get_current_user)
-            console.log('in local rendering')
+            // console.log('in local rendering')
             return localStorage.given_name
         },
     },

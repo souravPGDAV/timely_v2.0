@@ -18,7 +18,7 @@ const store = new Vuex.Store({
         // localStorage.setItem('authenticated', b);
     },
     set_a_token(state,e){
-        console.log('setting a_token=',e)
+        // console.log('setting a_token=',e)
         state.a_token=e
         // document.cookie = "a_token="+String(e);
         // localStorage.setItem('a_token', e);
